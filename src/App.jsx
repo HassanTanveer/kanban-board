@@ -33,15 +33,23 @@ export default function KanbanBoard() {
 
   // Load tasks from localStorage
   useEffect(() => {
-    const savedTasks = localStorage.getItem('kanbanTasks');
+    const savedTasks = localStorage.getItem("kanbanTasks");
     if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
+      try {
+        const parsed = JSON.parse(savedTasks);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTasks(parsed);
+        }
+      } catch (err) {
+        console.error("Error parsing saved tasks:", err);
+      }
     }
   }, []);
 
   // Save tasks whenever they change
   useEffect(() => {
     localStorage.setItem('kanbanTasks', JSON.stringify(tasks));
+    const savedTasks = localStorage.getItem('kanbanTasks');
   }, [tasks]);
 
   // Add a new task
